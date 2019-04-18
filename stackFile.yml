@@ -1,0 +1,54 @@
+version: '1.0'
+services:
+  - name: db
+    type: mongodb
+    version: 4.0
+    configuration: StandAlone
+    password: null
+    ports:
+      - 27017
+    remoteAccess: false
+    env:
+      MONGO_INITDB_DATABASE: strapi
+    deployTo:
+      - strapi
+
+  - name: strapi
+    type: docker
+    image: strapi/strapi
+    version: latest
+    globalDeps: apk add bash
+    ports:
+      - 1337
+    remoteAccess: false
+    env:
+      APP_NAME: strapi-app
+      DATABASE_CLIENT: mongo
+      DATABASE_HOST: "{{=service('db').getMasterAlias()}}"
+      DATABASE_PORT: "{{=service('db').getMainPort()}}"
+      DATABASE_NAME: strapi
+      DATABASE_PASSWORD: "{{=service('db').get('password')}}"
+      DATABASE_USERNAME: root
+      DATABASE_AUTHENTICATION_DATABASE: admin
+    volumes:
+      - directory: /usr/src/api/strapi-app
+    deployTo:
+      - strapi
+
+  - name: web
+    type: nginx
+    version: 1.15
+    ports:
+      - 80
+      - 443
+    remoteAccess: true
+    serviceFiles:
+      - name: strapi
+    deployTo:
+      - strapi
+
+hosts:
+  - name: strapi
+    requirements:
+      cores: 1
+      memory: 1
