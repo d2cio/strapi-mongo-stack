@@ -10,7 +10,7 @@
 
 ## Demo
 
-![How to deploy a stack](https://raw.githubusercontent.com/mastappl/images/master/strapi-mongo.gif)
+![How to deploy a stack](https://raw.githubusercontent.com/mastappl/images/master/strapi-postgres.gif)
 
 ## Minimal recommended configuration:
 
